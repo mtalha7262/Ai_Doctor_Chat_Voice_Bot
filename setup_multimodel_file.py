@@ -19,28 +19,23 @@ def encode_image(image_path):
 query = "Is there something wrong with my face?"  # User query to the model
 model = "llama-3.2-90b-vision-preview"  # Specify the model name
 
-def analyze_image_with_query(encoded_image, query, model):
-    client = Groq(api_key=GROQ_API_KEY)  # Correctly initialize the client with the API key
-    # Create the message payload with text and image
+def analyze_image_with_query(encoded_image, query, model):  # Updated to return response
+    client = Groq(api_key=GROQ_API_KEY)
     messages = [
         {
-            "role": "user",  # Role is set to user for the query
+            "role": "user",
             "content": [
-                {"type": "text", "text": query},  # Text content for the query
-                {
-                    "type": "image_url",  # Include the image in the payload
-                    "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"}  # Properly structured image URL object
-                },
+                {"type": "text", "text": query},
+                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"}},
             ],
         }
     ]
-    # Make the API call to the multimodal model
     try:
         chat_completion = client.chat.completions.create(
             messages=messages,
             model=model
         )
-        # Print the model's response
-        print("\n\n",chat_completion.choices[0].message.content)
+        return chat_completion.choices[0].message.content  # Return instead of print
     except Exception as e:
         print(f"Error: {e}")
+        return str(e)
