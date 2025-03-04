@@ -136,3 +136,18 @@ def process_inputs(audio_filepath, image_filepath):
     # Return values must match the order of outputs in the Gradio interface
     return speech_to_text_output, doctor_response, doctor_voice_filepath
 
+iface = gr.Interface(
+    fn=process_inputs,
+    inputs=[
+        gr.Audio(sources="microphone", type="filepath", label="Patient Audio"),
+        gr.Image(type="filepath", label="Patient Image")
+    ],
+    outputs=[
+        gr.Textbox(label="Speech to Text"),
+        gr.Textbox(label="Doctor's Response"),
+        gr.Audio(label="Doctor's Voice", type="filepath")
+    ],
+    title="AI Doctor with Vision and Voice"
+)
+
+iface.launch(debug=True)
